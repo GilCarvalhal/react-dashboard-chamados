@@ -1,6 +1,9 @@
 import { useState, useEffect, createContext } from "react";
 import { auth, db, storage } from "../services/firebaseConnection";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 import { useNavigate } from "react-router-dom";
@@ -14,10 +17,40 @@ function AuthProvider({ children }) {
 
   const navigate = useNavigate();
 
-  function signIn(email, password) {
-    console.log(email);
-    console.log(password);
-    alert("Logado com sucesso!");
+  async function signIn(email, password) {
+    setLoadingAuth(true);
+
+    await signInWithEmailAndPassword(auth, email, password)
+      .then(async (value) => {
+        let uid = value.user.uid;
+
+        const docRef = doc(db, "users", uid);
+        const docSnap = await getDoc(docRef);
+
+        let data = {
+          uid: uid,
+          nome: docSnap.data().nome,
+          email: value.user.email,
+          avatarUrl: docSnap.data().avatarUrl,
+        };
+
+        setUser(data);
+
+        storageUser(data);
+
+        setLoadingAuth(false);
+
+        toast.success(`Bem-vindo(a) de volta!`);
+
+        navigate(`/dashboard`);
+      })
+      .catch((error) => {
+        console.log(error);
+
+        setLoadingAuth(false);
+
+        toast.error(`Ops, algo deu errado!`);
+      });
   }
 
   // Cadastrar um novo user
@@ -25,7 +58,7 @@ function AuthProvider({ children }) {
     setLoadingAuth(true);
 
     if (password.length < 6) {
-      alert("A senha deve ter pelo menos 6 caracteres.");
+      toast.error("A senha deve ter pelo menos 6 caracteres.");
       setLoadingAuth(false);
       return;
     }
