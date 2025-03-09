@@ -55,7 +55,7 @@ function AuthProvider({ children }) {
 
         setLoadingAuth(false);
 
-        toast.success(`Bem-vindo(a) de volta!`);
+        toast.success(`Bem-vindo(a) ${user.nome}!`);
 
         navigate(`/dashboard`);
       })
