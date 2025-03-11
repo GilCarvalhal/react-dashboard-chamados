@@ -37,8 +37,6 @@ export default function Profile() {
     }
   }
 
-  async function handleUpload() {}
-
   async function handleSubmit(e) {
     e.preventDefault();
 

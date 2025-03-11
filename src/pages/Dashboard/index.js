@@ -1,5 +1,3 @@
-import { useContext } from "react";
-import { AuthContext } from "../../contexts/auth";
 import { Link } from "react-router-dom";
 
 import Header from "../../components/Header";
@@ -10,12 +8,6 @@ import { FiPlus, FiMessageSquare, FiSearch, FiEdit2 } from "react-icons/fi";
 import "./dashboard.css";
 
 export default function Dashboard() {
-  const { logout } = useContext(AuthContext);
-
-  async function handleLogout() {
-    await logout();
-  }
-
   return (
     <div>
       <Header />
@@ -45,7 +37,36 @@ export default function Dashboard() {
               <tr>
                 <td data-label="Cliente">Mercado Esquina</td>
                 <td data-label="Assunto">Suporte</td>
-                <td data-label="Status">Em Aberto</td>
+                <td data-label="Status">
+                  <span className="badge" style={{ backgroundColor: "#999" }}>
+                    Em aberto
+                  </span>
+                </td>
+                <td data-label="Cadastrado">11/03/2025</td>
+                <td data-label="#">
+                  <button
+                    className="action"
+                    style={{ backgroundColor: "#3583f6" }}
+                  >
+                    <FiSearch color="#fff" size={17} />
+                  </button>
+                  <button
+                    className="action"
+                    style={{ backgroundColor: "#f6a935" }}
+                  >
+                    <FiEdit2 color="#fff" size={17} />
+                  </button>
+                </td>
+              </tr>
+
+              <tr>
+                <td data-label="Cliente">Informática TECH</td>
+                <td data-label="Assunto">Suporte</td>
+                <td data-label="Status">
+                  <span className="badge" style={{ backgroundColor: "#999" }}>
+                    Em aberto
+                  </span>
+                </td>
                 <td data-label="Cadastrado">11/03/2025</td>
                 <td data-label="#">
                   <button
@@ -66,8 +87,6 @@ export default function Dashboard() {
           </table>
         </>
       </div>
-
-      <button onClick={handleLogout}>Sair da conta</button>
     </div>
   );
 }
