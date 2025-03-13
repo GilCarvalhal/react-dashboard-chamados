@@ -8,7 +8,8 @@ import { AuthContext } from "../../contexts/auth";
 import { db } from "../../services/firebaseConnection";
 
 import "./new.css";
-import { collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 const listRef = collection(db, "customers");
 export default function New() {
@@ -65,12 +66,33 @@ export default function New() {
 
   function handleChangeSelect(e) {
     setAssunto(e.target.value);
-    console.log(e.target.value);
   }
 
   function handleChangeCustomer(e) {
     setCustomerSelected(e.target.value);
-    console.log(customers[e.target.value]);
+  }
+
+  async function handleRegister(e) {
+    e.preventDefault();
+
+    await addDoc(collection(db, "chamados"), {
+      created: new Date(),
+      cliente: customers[customerSelected].nomeFantasia,
+      clienteId: customers[customerSelected].id,
+      assunto: assunto,
+      complemento: complemento,
+      status: status,
+      userId: user.uid,
+    })
+      .then(() => {
+        toast.success(`Chamado registrado!`);
+        setComplemento("");
+        setCustomerSelected(0);
+      })
+      .catch((error) => {
+        toast.error("Erro ao registrar, tente mais tarde!");
+        console.log(error);
+      });
   }
 
   return (
@@ -82,7 +104,7 @@ export default function New() {
         </Title>
 
         <div className="container">
-          <form className="form-profile">
+          <form className="form-profile" onSubmit={handleRegister}>
             <label>Clientes</label>
             {loadCustomer ? (
               <input type="text" disabled={true} value="Carregando..." />
