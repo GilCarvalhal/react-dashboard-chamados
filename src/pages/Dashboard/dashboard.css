@@ -51,7 +51,7 @@ table tr {
 
 table th,
 table td {
-  padding: 0.60em;
+  padding: 0.6em;
   text-align: center;
 }
 
@@ -79,6 +79,12 @@ table td .badge {
   color: #fff;
 }
 
+.dashboard span {
+  margin: 2em 0;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
 @media screen and (max-width: 600px) {
   table {
     border: 0;
@@ -101,7 +107,7 @@ table td .badge {
   table tr {
     border-bottom: 3px solid #ddd;
     display: block;
-    margin-bottom: 0.60em;
+    margin-bottom: 0.6em;
   }
 
   table td {
