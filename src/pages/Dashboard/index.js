@@ -7,7 +7,14 @@ import { FiPlus, FiMessageSquare, FiSearch, FiEdit2 } from "react-icons/fi";
 
 import "./dashboard.css";
 import { useEffect, useState } from "react";
-import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+} from "firebase/firestore";
 import { db } from "../../services/firebaseConnection";
 import { format } from "date-fns";
 
@@ -16,7 +23,10 @@ const listRef = collection(db, "chamados");
 export default function Dashboard() {
   const [chamados, setChamados] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [isEmpty, setIsEmpty] = useState(false);
+  const [lastDocs, setLastDocs] = useState();
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     async function loadChamados() {
@@ -51,10 +61,16 @@ export default function Dashboard() {
           complemento: doc.data().complemento,
         });
       });
+
+      const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1]; // Pegando o último item
+
       setChamados((chamados) => [...chamados, ...lista]);
+
+      setLastDocs(lastDoc);
     } else {
       setIsEmpty(true);
     }
+    setLoadingMore(false);
   }
 
   if (loading) {
@@ -72,6 +88,20 @@ export default function Dashboard() {
         </div>
       </div>
     );
+  }
+
+  async function handleMore() {
+    setLoadingMore(true);
+
+    const q = query(
+      listRef,
+      orderBy("created", "desc"),
+      startAfter(lastDocs),
+      limit(5)
+    );
+
+    const querySnapshot = await getDocs(q);
+    await updateState(querySnapshot);
   }
 
   return (
@@ -118,7 +148,10 @@ export default function Dashboard() {
                         <td data-label="Status">
                           <span
                             className="badge"
-                            style={{ backgroundColor: "#999" }}
+                            style={{
+                              backgroundColor:
+                                item.status === "Aberto" ? "#5cb85c" : "#999",
+                            }}
                           >
                             {item.status}
                           </span>
@@ -143,6 +176,14 @@ export default function Dashboard() {
                   })}
                 </tbody>
               </table>
+
+              {/* && === true: Caso o loadingMore esteja como true, ele mostra o h3. */}
+              {loadingMore && <h3 style={{marginTop: '10px'}}>Buscando mais chamados...</h3>}
+              {!loadingMore && !isEmpty && (
+                <button className="btn-more" onClick={handleMore}>
+                  Buscar mais
+                </button>
+              )}
             </>
           )}
         </>
