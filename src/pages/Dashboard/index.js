@@ -164,12 +164,13 @@ export default function Dashboard() {
                           >
                             <FiSearch color="#fff" size={17} />
                           </button>
-                          <button
+                          <Link
+                            to={`/new/${item.id}`}
                             className="action"
                             style={{ backgroundColor: "#f6a935" }}
                           >
                             <FiEdit2 color="#fff" size={17} />
-                          </button>
+                          </Link>
                         </td>
                       </tr>
                     );
@@ -178,7 +179,9 @@ export default function Dashboard() {
               </table>
 
               {/* && === true: Caso o loadingMore esteja como true, ele mostra o h3. */}
-              {loadingMore && <h3 style={{marginTop: '10px'}}>Buscando mais chamados...</h3>}
+              {loadingMore && (
+                <h3 style={{ marginTop: "10px" }}>Buscando mais chamados...</h3>
+              )}
               {!loadingMore && !isEmpty && (
                 <button className="btn-more" onClick={handleMore}>
                   Buscar mais
