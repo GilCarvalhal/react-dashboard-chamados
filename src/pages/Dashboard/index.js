@@ -29,6 +29,9 @@ export default function Dashboard() {
   const [lastDocs, setLastDocs] = useState();
   const [loadingMore, setLoadingMore] = useState(false);
 
+  const [showPostModal, setShowPostModal] = useState(false);
+  const [detail, setDetail] = useState();
+
   useEffect(() => {
     async function loadChamados() {
       const q = query(listRef, orderBy("created", "desc"), limit(5));
@@ -105,6 +108,11 @@ export default function Dashboard() {
     await updateState(querySnapshot);
   }
 
+  function toogleModal(item) {
+    setShowPostModal(!showPostModal);
+    setDetail(item);
+  }
+
   return (
     <div>
       <Header />
@@ -162,6 +170,7 @@ export default function Dashboard() {
                           <button
                             className="action"
                             style={{ backgroundColor: "#3583f6" }}
+                            onClick={() => toogleModal(item)}
                           >
                             <FiSearch color="#fff" size={17} />
                           </button>
@@ -193,7 +202,12 @@ export default function Dashboard() {
         </>
       </div>
 
-      <Modal />
+      {showPostModal && (
+        <Modal
+          conteudo={detail}
+          close={() => setShowPostModal(!showPostModal)}
+        />
+      )}
     </div>
   );
 }
