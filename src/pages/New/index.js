@@ -92,6 +92,7 @@ export default function New() {
       .catch((error) => {
         console.log(error);
         setIdCustomer(false);
+        navigate("/dashboard");
       });
   }
 
